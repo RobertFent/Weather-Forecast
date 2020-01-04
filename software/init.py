@@ -7,13 +7,21 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 from matplotlib import style
+import os
 
 API_KEY = 'e687fa98d40547f3ab690449192311'
 BASE_URL = 'https://api.worldweatheronline.com/premium/v1/past-weather.ashx'
-START_DATE = '2019-10-01'
-END_DATE = '2019-10-31'
+START_DATE = '2019-12-01'
+END_DATE = '2019-12-31'
+FILE_POST_FIX = 'dec'
+LATITUDE = '49.013432'
+LONGITUDE = '12.101624'
+
 TEMP_COL = 'tempC'
 PRECIP_COL = 'precipMM'
+
+# change labelName to change predicted feature
+LABEL_NAME = TEMP_COL
 
 # _ needed for string representation
 NEXT_DAY = '2019-11-01_'
@@ -21,13 +29,14 @@ NEXT_DAY_TIMESTAMPS = [NEXT_DAY + '0', NEXT_DAY +  '300', NEXT_DAY +  '600', NEX
 
 
 def generateRequestURL():
-    request_url = BASE_URL + '?' + 'q=49.013432,12.101624&date=' + \
+    request_url = BASE_URL + '?' + 'q=' + LATITUDE + ',' + LONGITUDE +'&date=' + \
         START_DATE + '&enddate=' + END_DATE + '&key=' + API_KEY
     return request_url
 
 
 # https://stackoverflow.com/questions/29810572/save-xml-response-from-get-call-using-python
 def parseResponseToXMLFile(res):
+    print('Parsing response...')
     root = ET.fromstring(res.text)
     tree = ET.ElementTree(root)
     tree.write("weatherData.xml")
@@ -42,8 +51,9 @@ def parseResponseToXMLFile(res):
 
 # http://blog.appliedinformaticsinc.com/how-to-parse-and-convert-xml-to-csv-using-python/
 def convertXMLToCSV():
-
-    with open('weatherData/weatherData_nov.csv', 'w') as csvFile:
+    print('Converting xml file...')
+    newFileName = 'weatherData/weatherData_%s.csv' % (FILE_POST_FIX)
+    with open(newFileName, 'w') as csvFile:
         csvWriter = csv.writer(csvFile)
         csvHeaders = []
         with open("weatherData.xml", "r") as xmlFile:
@@ -73,6 +83,8 @@ def convertXMLToCSV():
                         csvRowHourlyData.append(innerHourlyDataElem.text)
                     csvRow = csvRowDayData + csvRowHourlyData
                     csvWriter.writerow(csvRow)
+    # remove not needed file
+    os.remove('weatherData.xml')
 
 # returns dataframe with only needed cols
 def getCleanedDf():
@@ -156,7 +168,7 @@ def plotForecast(dataframe, forecastSet, labelName):
     plt.legend(loc=8)
     plt.xlabel('Date')
     plt.ylabel(labelName)
-    plt.savefig('%s_forecast.png' % (labelName))
+    plt.savefig('forecast/%s_forecast.png' % (labelName))
 
 
 # inits model and returns trained model
@@ -175,18 +187,18 @@ def getForecastSet(X, forecastRange, model):
 
 # gets weatherdata from api and parses it to csv
 def fetchDataAndConvert():
+    print('Fetching data...')
     res = requests.get(generateRequestURL())
+    if(res.status_code != 200):
+        print('An error occurred retrieving new weather data\nPlease check the request headers')
+        return
     parseResponseToXMLFile(res)
     convertXMLToCSV()
 
 def main():
-
     # fetchDataAndConvert()
-
-    labelName = TEMP_COL
-
     df = getCleanedDf()
-    dfReady, forecastRange = setupDf(df, labelName)
+    dfReady, forecastRange = setupDf(df, LABEL_NAME)
     X, y = getArrays(dfReady)
     X_train, X_test, y_train, y_test = splitDataFrame(dfReady, X, y)
     
@@ -194,7 +206,7 @@ def main():
 
     forecastSet = getForecastSet(X, forecastRange, model)
 
-    plotForecast(dfReady, forecastSet, labelName)
+    plotForecast(dfReady, forecastSet, LABEL_NAME)
 
 
 main()
