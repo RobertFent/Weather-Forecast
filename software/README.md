@@ -4,12 +4,16 @@ Small project for predicting the future weather based on previous data about wea
 ## How to use this software:
 1. Clone this repository
 2. Change directory to ./software (terminal-command: cd software)
-3. Install all needed libraries via:
+3. Activate python-env via:
 ```shell
-pip install libraryName
+source python-env/bin/activate
 ```
-4. Set LABEL_NAME to columnname of feature you want to predict
-5. Run the script (on linux) via:
+4. Install all needed libraries via:
+```shell
+pip install -r requirements.txt
+```
+5. Set LABEL_NAME to columnname of feature you want to predict
+6. Run the script (on linux) via:
 ```shell
 python3 init.py
 ``` 
