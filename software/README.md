@@ -5,9 +5,14 @@ Small project for predicting the future weather based on previous data about wea
 1. Clone this repository
 2. Change directory to ./software (terminal-command: cd software)
 3. Activate python-env via:
-```shell
-source python-env/bin/activate
-```
+    + Linux/MacOS:
+    ```shell
+    source python-env/bin/activate
+    ```
+    + Windows:
+    ```shell
+    python-env\Scripts\activate.bat
+    ```
 4. Install all needed libraries via:
 ```shell
 pip install -r requirements.txt
