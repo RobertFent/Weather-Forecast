@@ -136,9 +136,9 @@ def setupDf(dataframe, labelName):
     return dataframe, forecastRange
 
 
-# splits df into test + train set (80%train, 20%test)
+# splits arrays into test + train set (80%train, 20%test)
 # returns sets
-def splitDataFrame(dataframe, X, y):
+def getSetsFromArrays(X, y):
     return train_test_split(X, y, test_size=0.2)
 
 
@@ -200,7 +200,7 @@ def main():
     df = getCleanedDf()
     dfReady, forecastRange = setupDf(df, LABEL_NAME)
     X, y = getArrays(dfReady)
-    X_train, X_test, y_train, y_test = splitDataFrame(dfReady, X, y)
+    X_train, X_test, y_train, y_test = getSetsFromArrays(X, y)
     
     model = generateModel(X_train, X_test, y_train, y_test)
 
