@@ -4,21 +4,18 @@ Small project for predicting the future weather based on previous data about wea
 ## How to use this software:
 1. Clone this repository
 2. Change directory to ./software (terminal-command: cd software)
-3. Activate python-env via:
-    + Linux/MacOS:
+3. Activate .venv via:
+    + select venv in vscode and create a new one
+    + then:
     ```shell
-    source python-env/bin/activate
-    ```
-    + Windows:
-    ```shell
-    python-env\Scripts\activate.bat
+    source .venv/bin/activate
     ```
 4. Install all needed libraries via:
 ```shell
-pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 ```
-5. Set LABEL_NAME to columnname of feature you want to predict
-6. Run the script (on linux) via:
+1. Set LABEL_NAME to columnname of feature you want to predict
+2. Run the script (on linux) via:
 ```shell
 python3 init.py
 ``` 

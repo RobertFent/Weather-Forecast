@@ -1,5 +1,5 @@
 numpy
 requests
 pandas
-sklearn
+scikit-learn
 matplotlib
